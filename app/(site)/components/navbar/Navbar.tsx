@@ -11,6 +11,7 @@ import { CartBadge } from "./CartBadge";
 import Image from "next/image";
 import { useCartCount } from "@/app/providers/CartProvider";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { useGetCartQuery } from "@/lib/api/cartApi";
 
 export default function Navbar() {
   const { brand } = useBrand();
@@ -18,6 +19,7 @@ export default function Navbar() {
   const theme = brandTheme[brand];
   const cartCount = useCartCount();
   const [open, setOpen] = useState(false);
+  const { data: cart, isLoading } = useGetCartQuery();
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -101,13 +103,13 @@ export default function Navbar() {
               whileTap={{ scale: 0.95 }}
               className="p-2.5 rounded-xl transition"
               style={{
-                backgroundColor: `${theme.primary}12`, // subtle brand bg
+                backgroundColor: `${theme.primary}12`,
               }}
             >
               <FiShoppingCart size={22} style={{ color: theme.primary }} />
             </motion.div>
 
-            <CartBadge count={cartCount} themeColor={theme.primary} />
+            <CartBadge count={cart?.items?.length} themeColor={theme.primary} />
           </Link>
 
           {/* Mobile Menu */}

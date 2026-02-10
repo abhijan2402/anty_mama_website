@@ -1,33 +1,66 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { EmptyCartState } from "./components/EmptyCartState";
 import { CartItemRow } from "./components/CartItemRow";
 import { FiShoppingCart, FiArrowLeft } from "react-icons/fi";
 import Link from "next/link";
-import { useCart } from "@/app/providers/CartProvider";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { RequireLoginModal } from "../components/auth/require-login-modal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  useGetCartQuery,
+  useRemoveFromCartMutation,
+  useUpdateCartMutation,
+} from "@/lib/api/cartApi";
+import { CartPageLoader } from "./components/CartPageLoader";
+import { toast } from "sonner";
+import CheckoutModal from "./components/CheckoutModal";
 
 export default function CartClient() {
   const { user } = useAuth();
   const router = useRouter();
-  const { items, groupedItems, removeFromCart } = useCart();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loadingItemId, setLoadingItemId] = useState<string | null>(null);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const { data: cart, isLoading } = useGetCartQuery();
+  const [removeFromCart] = useRemoveFromCartMutation();
+  const [updateCart] = useUpdateCartMutation();
 
-  const total = items.reduce((sum: number, item: any) => sum + item.price, 0);
+  if (isLoading) return <CartPageLoader />;
+  if (!cart || cart.items.length === 0) return <EmptyCartState />;
 
-  if (items.length === 0) return <EmptyCartState />;
+  const handleUpdateQty = async (productId: string, qty: number) => {
+    try {
+      setLoadingItemId(productId);
+      await updateCart({ productId, quantity: qty }).unwrap();
+      toast.success("Cart updated");
+    } catch {
+      toast.error("Failed to update quantity");
+    } finally {
+      setLoadingItemId(null);
+    }
+  };
+
+  const handleRemove = async (productId: string) => {
+    try {
+      setLoadingItemId(productId);
+      await removeFromCart(productId).unwrap();
+      toast.success("Item removed from cart");
+    } catch {
+      toast.error("Failed to remove item");
+    } finally {
+      setLoadingItemId(null);
+    }
+  };
 
   const handleCheckout = () => {
     if (!user) {
-      setShowLoginModal(true); // 🚨 show modal
+      setShowLoginModal(true);
       return;
     }
-
-    router.push("/checkout"); // ✅ logged in
+    setCheckoutOpen(true); // Open modal instead of redirect
   };
 
   return (
@@ -35,7 +68,7 @@ export default function CartClient() {
       {/* Header */}
       <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-neutral-900 flex items-center gap-2">
+          <h1 className="text-3xl md:text-4xl text-amber-950 font-bold flex items-center gap-2">
             <FiShoppingCart size={28} /> Your Cart
           </h1>
           <p className="mt-1 text-neutral-600">
@@ -45,69 +78,75 @@ export default function CartClient() {
 
         <Link
           href="/products"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-neutral-700 hover:text-neutral-900 transition"
+          className="inline-flex items-center gap-2 text-amber-950 text-sm font-semibold"
         >
           <FiArrowLeft /> Continue Shopping
         </Link>
       </div>
 
       <div className="grid md:grid-cols-[1fr_360px] gap-10">
-        {/* Products */}
-        <div className="space-y-10">
-          {Object.entries(groupedItems).map(([key, list]: any) =>
-            list.length ? (
-              <section key={key}>
-                <h3 className="text-xs font-semibold mb-4 uppercase tracking-wider text-neutral-500">
-                  {key === "antyMama" ? "Anty Mama" : "Nurse Cam"}
-                </h3>
-
-                <AnimatePresence>
-                  {list.map((item: any) => (
-                    <CartItemRow
-                      key={item.id}
-                      item={item}
-                      onRemove={removeFromCart}
-                      color="red"
-                    />
-                  ))}
-                </AnimatePresence>
-              </section>
-            ) : null
-          )}
+        {/* Cart Items */}
+        <div className="space-y-4">
+          <AnimatePresence>
+            {cart.items.map((item: any) => (
+              <CartItemRow
+                key={item.productId._id}
+                item={item}
+                loading={loadingItemId === item.productId._id}
+                onRemove={() => handleRemove(item.productId._id)}
+                onUpdate={(qty: number) =>
+                  handleUpdateQty(item.productId._id, qty)
+                }
+              />
+            ))}
+          </AnimatePresence>
         </div>
 
-        {/* Billing summary */}
-        <aside className="rounded-2xl border border-neutral-200 p-6 h-fit">
-          <h4 className="text-sm font-semibold mb-6 text-neutral-800">
+        {/* Summary */}
+        <aside className="rounded-2xl border p-6 h-fit">
+          <h4 className="text-sm font-semibold mb-6 text-amber-950">
             Order Summary
           </h4>
 
-          <div className="flex justify-between text-sm text-neutral-600 mb-4">
+          <div className="flex justify-between text-sm mb-4 text-gray-900">
             <span>Subtotal</span>
-            <span className="font-semibold text-neutral-900">${total}</span>
+            <span className="font-semibold">${cart.totalAmount}</span>
           </div>
 
-          <div className="flex justify-between text-sm text-neutral-600 mb-6">
+          <div className="flex justify-between text-sm mb-6 text-gray-900">
             <span>Shipping</span>
-            <span className="font-semibold text-neutral-900">$0</span>
+            <span className="font-semibold">$0</span>
           </div>
 
-          <div className="flex justify-between text-sm font-semibold text-neutral-900 mb-6">
+          <div className="flex justify-between font-semibold mb-6 text-gray-900">
             <span>Total</span>
-            <span>${total}</span>
+            <span>${cart.totalAmount}</span>
           </div>
 
           <button
             onClick={handleCheckout}
-            className="w-full py-3 rounded-xl bg-neutral-900 text-white text-sm font-semibold hover:opacity-90 transition"
+            className="w-full py-3 rounded-xl bg-neutral-900 text-white font-semibold"
           >
-            Proceed to Checkout
+            Proceed to Checkout ({cart.items.length} items)
           </button>
         </aside>
       </div>
+
       <RequireLoginModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
+      />
+
+      <CheckoutModal
+        isOpen={checkoutOpen}
+        cartItems={cart.items}
+        totalAmount={cart.totalAmount}
+        onClose={() => setCheckoutOpen(false)}
+        onSuccess={() => {
+          setCheckoutOpen(false);
+          router.refresh(); // Refresh cart/orders
+          toast.success("Order placed! Check your orders.");
+        }}
       />
     </div>
   );

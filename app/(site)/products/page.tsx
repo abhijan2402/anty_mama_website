@@ -39,7 +39,7 @@ export default function ProductsPage() {
 
   if (isLoading) {
     return (
-      <div className="h-[60vh] flex items-center justify-center">
+      <div className="h-[60vh] text-amber-900 flex items-center justify-center">
         Loading products…
       </div>
     );

@@ -8,6 +8,7 @@ type Props = {
   color: string;
   textColor: string;
   alreadyAdded?: boolean;
+  loading?: boolean;
 };
 
 export function AddToCartButton({
@@ -15,6 +16,7 @@ export function AddToCartButton({
   color,
   textColor,
   alreadyAdded,
+  loading,
 }: Props) {
   const [toastVisible, setToastVisible] = useState(false);
 
@@ -30,11 +32,19 @@ export function AddToCartButton({
   return (
     <div className="relative">
       <button
-        onClick={handleClick}
-        className="w-full mt-1 py-2 text-xs font-semibold rounded-lg transition"
+        disabled={loading}
+        onClick={onAdd}
+        className="w-full mt-2 py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 disabled:opacity-60"
         style={{ backgroundColor: color, color: textColor }}
       >
-        {alreadyAdded ? "Added in Cart" : "Add to Cart"}
+        {loading ? (
+          <>
+            <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            Adding...
+          </>
+        ) : (
+          "Add to Cart"
+        )}
       </button>
 
       <AnimatePresence>

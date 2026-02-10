@@ -18,6 +18,5 @@ export const getImageUrl = (path: any) => {
     ? pathStr
     : `${baseUrl}/${pathStr.replace(/^\//, "")}`;
 
-  console.log("Image URL:", fullUrl);
   return fullUrl;
 };

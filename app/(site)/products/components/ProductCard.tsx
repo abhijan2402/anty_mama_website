@@ -5,14 +5,30 @@ import { brandTheme } from "@/lib/brandTheme";
 import { useBrand } from "@/app/providers/BrandProvider";
 import { useCart } from "@/app/providers/CartProvider";
 import { getImageUrl } from "@/lib/utils";
+import { useAddToCartMutation } from "@/lib/api/cartApi";
+import { toast } from "sonner";
 
 export function ProductCard({ product }: any) {
-  const { addToCart, items } = useCart();
+  const [addToCart , { isLoading }] = useAddToCartMutation();
+
+
   const { brand } = useBrand();
   const theme = brandTheme[brand];
 
-  const alreadyAdded = items.some((i: any) => i.id === product._id);
   const image = getImageUrl(product.images?.[0]) || "/placeholder.png";
+
+   const handleAddToCart = async () => {
+     try {
+       await addToCart({ productId: product._id }).unwrap();
+       toast.success("Added to cart");
+     } catch (err: any) {
+       if (err?.status === 409) {
+         toast.info("Item already in cart");
+       } else {
+         toast.error("Failed to add item");
+       }
+     }
+   };
 
   return (
     <div
@@ -23,12 +39,7 @@ export function ProductCard({ product }: any) {
         href={`/products/${product._id}`}
         className="block relative aspect-[4/5] bg-gray-100"
       >
-        <Image
-          src={image}
-          alt={product.name}
-          fill
-          className="object-cover"
-        />
+        <Image src={image} alt={product.name} fill className="object-cover" />
       </Link>
 
       <div className="p-3 space-y-2">
@@ -48,15 +59,8 @@ export function ProductCard({ product }: any) {
         <AddToCartButton
           color={theme.primary}
           textColor={theme.subtext}
-          onAdd={() =>
-            addToCart({
-              id: product._id,
-              name: product.name,
-              price: product.price,
-              brand,
-            })
-          }
-          alreadyAdded={alreadyAdded}
+          loading={isLoading}
+          onAdd={handleAddToCart}
         />
       </div>
     </div>
