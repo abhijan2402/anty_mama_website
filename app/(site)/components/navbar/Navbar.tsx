@@ -10,9 +10,11 @@ import NavLinks from "./NavLinks";
 import { CartBadge } from "./CartBadge";
 import Image from "next/image";
 import { useCartCount } from "@/app/providers/CartProvider";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 export default function Navbar() {
   const { brand } = useBrand();
+  const { user, logout } = useAuth();
   const theme = brandTheme[brand];
   const cartCount = useCartCount();
   const [open, setOpen] = useState(false);
@@ -53,31 +55,43 @@ export default function Navbar() {
         </div>
 
         {/* Right Section */}
-        {/* Right Section */}
         <div className="flex items-center gap-4 relative">
-          {/* Auth buttons (desktop) */}
+          {/* Auth buttons / Profile (desktop) */}
           <div className="hidden md:flex items-center gap-3">
-            <Link
-              href="/login"
-              className="px-4 py-2 text-sm font-medium rounded-lg transition"
-              style={{
-                color: theme.primary,
-                border: `1px solid ${theme.primary}`,
-              }}
-            >
-              Login
-            </Link>
+            {!user ? (
+              <>
+                <Link
+                  href="/login"
+                  className="px-4 py-2 text-sm font-medium rounded-lg transition"
+                  style={{
+                    color: theme.primary,
+                    border: `1px solid ${theme.primary}`,
+                  }}
+                >
+                  Login
+                </Link>
 
-            <Link
-              href="/signup"
-              className="px-4 py-2 text-sm font-semibold rounded-lg transition hover:opacity-90"
-              style={{
-                backgroundColor: theme.primary,
-                color: theme.subtext,
-              }}
-            >
-              Sign Up
-            </Link>
+                <Link
+                  href="/signup"
+                  className="px-4 py-2 text-sm font-semibold rounded-lg transition hover:opacity-90"
+                  style={{
+                    backgroundColor: theme.primary,
+                    color: theme.subtext,
+                  }}
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <Link
+                href="/profile"
+                className="p-2.5 rounded-xl transition"
+                style={{ backgroundColor: `${theme.primary}12` }}
+                title={user.name}
+              >
+                <FiUser size={22} style={{ color: theme.primary }} />
+              </Link>
+            )}
           </div>
 
           {/* Cart */}
@@ -147,36 +161,68 @@ export default function Navbar() {
             </div>
 
             {/* Links */}
-            {/* Links */}
             <div className="flex-1 px-6 py-10 flex flex-col justify-between">
               <NavLinks mobile />
 
-              {/* Auth buttons (mobile) */}
+              {/* Auth buttons / Profile (mobile) */}
               <div className="mt-10 space-y-4">
-                <Link
-                  href="/login"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-medium border"
-                  style={{
-                    color: theme.primary,
-                    borderColor: theme.primary,
-                  }}
-                >
-                  <FiUser size={16} />
-                  Login
-                </Link>
+                {!user ? (
+                  <>
+                    <Link
+                      href="/login"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-medium border"
+                      style={{
+                        color: theme.primary,
+                        borderColor: theme.primary,
+                      }}
+                    >
+                      <FiUser size={16} />
+                      Login
+                    </Link>
 
-                <Link
-                  href="/signup"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center justify-center w-full py-3 rounded-xl text-sm font-semibold transition hover:opacity-90"
-                  style={{
-                    backgroundColor: theme.primary,
-                    color: theme.subtext,
-                  }}
-                >
-                  Sign Up
-                </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center justify-center w-full py-3 rounded-xl text-sm font-semibold transition hover:opacity-90"
+                      style={{
+                        backgroundColor: theme.primary,
+                        color: theme.subtext,
+                      }}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/profile"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold"
+                      style={{
+                        backgroundColor: `${theme.primary}12`,
+                        color: theme.primary,
+                      }}
+                    >
+                      <FiUser size={16} />
+                      My Profile
+                    </Link>
+
+                    <button
+                      onClick={() => {
+                        logout();
+                        setOpen(false);
+                      }}
+                      className="w-full py-3 rounded-xl text-sm font-semibold border"
+                      style={{
+                        borderColor: theme.primary,
+                        color: theme.primary,
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

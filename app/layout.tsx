@@ -1,22 +1,9 @@
-import type { Metadata } from "next";
 import "./globals.css";
-
+import ReduxProvider from "./providers/ReduxProvider";
 import { AuthProvider } from "./providers/AuthProvider";
 import { BrandProvider } from "./providers/BrandProvider";
 import { CartProvider } from "./providers/CartProvider";
-import Navbar from "./components/navbar/Navbar";
-import Footer from "./components/Footer";
-import ReduxProvider from "./providers/ReduxProvider";
 import { Toaster } from "sonner";
-
-export const metadata: Metadata = {
-  title: {
-    default: "Anty Mama LLC | Cookware & Nursing Education",
-    template: "%s | Anty Mama LLC",
-  },
-  description:
-    "Anty Mama LLC offers premium cookware and trusted nursing education products worldwide.",
-};
 
 export default function RootLayout({
   children,
@@ -25,16 +12,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col">
+      <body>
         <ReduxProvider>
           <AuthProvider>
             <BrandProvider>
               <CartProvider>
-                <Navbar />
-
-                <main className="flex-1">{children}</main>
-
-                <Footer />
+                {children}
                 <Toaster richColors position="top-right" />
               </CartProvider>
             </BrandProvider>

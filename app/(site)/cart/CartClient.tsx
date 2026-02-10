@@ -1,18 +1,34 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useCart } from "../providers/CartProvider";
 import { EmptyCartState } from "./components/EmptyCartState";
 import { CartItemRow } from "./components/CartItemRow";
 import { FiShoppingCart, FiArrowLeft } from "react-icons/fi";
 import Link from "next/link";
+import { useCart } from "@/app/providers/CartProvider";
+import { useAuth } from "@/app/providers/AuthProvider";
+import { RequireLoginModal } from "../components/auth/require-login-modal";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CartClient() {
+  const { user } = useAuth();
+  const router = useRouter();
   const { items, groupedItems, removeFromCart } = useCart();
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const total = items.reduce((sum: number, item: any) => sum + item.price, 0);
 
   if (items.length === 0) return <EmptyCartState />;
+
+  const handleCheckout = () => {
+    if (!user) {
+      setShowLoginModal(true); // 🚨 show modal
+      return;
+    }
+
+    router.push("/checkout"); // ✅ logged in
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
@@ -81,11 +97,18 @@ export default function CartClient() {
             <span>${total}</span>
           </div>
 
-          <button className="w-full py-3 rounded-xl bg-neutral-900 text-white text-sm font-semibold hover:opacity-90 transition">
+          <button
+            onClick={handleCheckout}
+            className="w-full py-3 rounded-xl bg-neutral-900 text-white text-sm font-semibold hover:opacity-90 transition"
+          >
             Proceed to Checkout
           </button>
         </aside>
       </div>
+      <RequireLoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
     </div>
   );
 }
