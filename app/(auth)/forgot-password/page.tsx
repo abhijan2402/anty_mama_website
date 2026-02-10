@@ -135,7 +135,7 @@ export default function ForgotPasswordPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@email.com"
-                      className="w-full pl-10 py-3 rounded-lg border border-gray-300 focus:border-[#693C36] focus:ring-2 focus:ring-[#693C36]/20 outline-none text-sm"
+                      className="w-full pl-10 py-3 rounded-lg border text-gray-800 border-gray-300 focus:border-[#693C36] focus:ring-2 focus:ring-[#693C36]/20 outline-none text-sm"
                     />
                   </div>
                 </div>
@@ -173,7 +173,7 @@ export default function ForgotPasswordPage() {
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
                     placeholder="Enter OTP"
-                    className="w-full py-3 px-4 rounded-lg border border-gray-300 focus:border-[#693C36] focus:ring-2 focus:ring-[#693C36]/20 outline-none text-sm"
+                    className="w-full py-3 px-4 rounded-lg border text-gray-800 border-gray-300 focus:border-[#693C36] focus:ring-2 focus:ring-[#693C36]/20 outline-none text-sm"
                   />
                 </div>
 
@@ -189,7 +189,7 @@ export default function ForgotPasswordPage() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 py-3 rounded-lg border border-gray-300 focus:border-[#693C36] focus:ring-2 focus:ring-[#693C36]/20 outline-none text-sm"
+                      className="w-full pl-10 py-3 rounded-lg border text-gray-800 border-gray-300 focus:border-[#693C36] focus:ring-2 focus:ring-[#693C36]/20 outline-none text-sm"
                     />
                   </div>
                 </div>

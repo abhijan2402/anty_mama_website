@@ -37,13 +37,14 @@ export default function ProductsPage() {
   const products = data?.products ?? [];
   const pagination = data?.pagination;
 
-  if (isLoading) {
-    return (
-      <div className="h-[60vh] text-amber-900 flex items-center justify-center">
-        Loading products…
-      </div>
-    );
-  }
+ if (isLoading) {
+   return (
+     <div className="h-[60vh] text-amber-900 flex flex-col items-center justify-center space-y-4">
+       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-900"></div>
+       <p className="text-lg font-semibold">Loading products…</p>
+     </div>
+   );
+ }
 
   if (isError) {
     return (

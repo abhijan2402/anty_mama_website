@@ -53,14 +53,25 @@ export const cartApi = createApi({
       }),
       invalidatesTags: ["Cart"],
     }),
+    // 🔹 CLEAR CART
+    clearCart: builder.mutation<any, void>({
+      query: () => ({
+        url: `/api/cart/clear`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Cart"],
+    }),
 
     // ORDER APIS
+
+    // GET ORDER LIST
     getOrder: builder.query<any, { page?: number; limit?: number }>({
       query: ({ page = 1, limit = 10 }) =>
         `/api/orders?page=${page}&limit=${limit}`,
       providesTags: ["Cart"],
     }),
 
+    // CREATE ORDER
     createOrder: builder.mutation<
       any,
       {
@@ -85,6 +96,7 @@ export const {
   useAddToCartMutation,
   useUpdateCartMutation,
   useRemoveFromCartMutation,
+  useClearCartMutation,
   useCreateOrderMutation,
   useGetOrderQuery,
 } = cartApi;

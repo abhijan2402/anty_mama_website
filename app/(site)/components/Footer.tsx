@@ -20,13 +20,15 @@ export default function Footer() {
         {/* Brand */}
         <div>
           <div className="flex items-center gap-3 mb-6">
-            <Image
-              src="/anty_logo.png"
-              alt="Anty Mama Logo"
-              width={48}
-              height={56}
-              priority
-            />
+            <div className="bg-white p-1 rounded-md">
+              <Image
+                src="/anty_logo.png"
+                alt="Anty Mama Logo"
+                width={48}
+                height={56}
+                priority
+              />
+            </div>
             <h3 className="text-2xl font-semibold">
               {brand === "ANTY_MAMA" ? "Anty Mama" : "Nurse Cam"}
             </h3>

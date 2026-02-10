@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 
 export default function OrderHistory() {
   const [page, setPage] = useState(1);
-  const limit = 5;
+  const limit = 10;
 
   const { data, isLoading } = useGetOrderQuery({ page, limit });
 

@@ -69,8 +69,9 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-slate-50 to-gray-50 flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-900"></div>
+      <div className="h-[60vh] text-amber-950 flex flex-col items-center justify-center space-y-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-950"></div>
+        <p className="text-lg font-semibold">Loading Profile</p>
       </div>
     );
   }
@@ -82,14 +83,14 @@ export default function ProfilePage() {
         <div className="backdrop-blur-xl rounded-3xl p-8 border border-[var(--brand-border, #E5E7EB)] shadow-xl">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex items-center space-x-4">
-              <div className="w-20 h-20 rounded-2xl flex items-center justify-center bg-amber-900 shadow-2xl">
+              <div className="w-20 h-20 rounded-2xl flex items-center justify-center bg-amber-950 shadow-2xl">
                 <User className="w-10 h-10 " />
               </div>
               <div>
-                <h1 className="text-4xl font-bold bg-clip-text bg-linear-to-r   text-amber-900 text-amber">
+                <h1 className="text-4xl font-bold bg-clip-text bg-linear-to-r   text-amber-950 text-amber">
                   My Account
                 </h1>
-                <p className="text-amber-900 mt-1">
+                <p className="text-amber-950 mt-1">
                   Manage your profile and preferences
                 </p>
               </div>
@@ -118,13 +119,13 @@ export default function ProfilePage() {
           }}
         >
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold bg-clip-text  flex text-amber-900 items-center gap-3">
-              <User className="w-7 h-7 text-amber-900 " />
+            <h2 className="text-2xl font-bold bg-clip-text  flex text-amber-950 items-center gap-3">
+              <User className="w-7 h-7 text-amber-950 " />
               Profile Details
             </h2>
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className="flex items-center gap-2 px-5 py-2.5 font-semibold bg-amber-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="flex items-center gap-2 px-5 py-2.5 font-semibold bg-amber-950 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
             >
               {isEditing ? (
                 <>
@@ -144,7 +145,7 @@ export default function ProfilePage() {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Name Field */}
               <div className="space-y-3">
-                <label className="font-semibold text-amber-900 flex items-center gap-2">
+                <label className="font-semibold text-amber-950 flex items-center gap-2">
                   <User className="w-5 h-5" style={{ color: theme.primary }} />
                   Full Name
                 </label>
@@ -152,13 +153,13 @@ export default function ProfilePage() {
                   <input
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full px-4 py-4 border rounded-2xl bg-white/50 backdrop-blur-sm  outline-none transition-all duration-300 text-lg placeholder:text-[var(--brand-muted)] shadow-sm h-14 text-amber-900"
+                    className="w-full px-4 py-4 border rounded-2xl bg-white/50 backdrop-blur-sm  outline-none transition-all duration-300 text-lg placeholder:text-[var(--brand-muted)] shadow-sm h-14 text-amber-950"
                     placeholder="Enter your full name"
                     style={{ borderColor: theme.border }}
                   />
                 ) : (
                   <div
-                    className="px-4 py-4 text-amber-900 bg-[rgba(255,255,255,0.3)] backdrop-blur-sm rounded-2xl border shadow-sm min-h-[3.5rem] flex items-center text-xl font-semibold"
+                    className="px-4 py-4 text-amber-950 bg-[rgba(255,255,255,0.3)] backdrop-blur-sm rounded-2xl border shadow-sm min-h-[3.5rem] flex items-center text-xl font-semibold"
                     style={{
                       borderColor: theme.border,
                       color: theme.text,
@@ -171,7 +172,7 @@ export default function ProfilePage() {
 
               {/* Email Field */}
               <div className="space-y-3">
-                <label className="font-semibold text-amber-900 flex items-center gap-2">
+                <label className="font-semibold text-amber-950 flex items-center gap-2">
                   <Mail className="w-5 h-5" style={{ color: theme.primary }} />
                   Email Address
                 </label>
@@ -182,13 +183,13 @@ export default function ProfilePage() {
                       setForm({ ...form, email: e.target.value })
                     }
                     type="email"
-                    className="w-full px-4 py-4 border rounded-2xl text-amber-900 bg-white/50 backdrop-blur-sm  outline-none transition-all duration-300 text-lg  shadow-sm h-14"
+                    className="w-full px-4 py-4 border rounded-2xl text-amber-950 bg-white/50 backdrop-blur-sm  outline-none transition-all duration-300 text-lg  shadow-sm h-14"
                     placeholder="Enter your email"
                     style={{ borderColor: theme.border }}
                   />
                 ) : (
                   <div
-                    className="px-4 py-4 bg-[rgba(255,255,255,0.3)]  text-amber-900 backdrop-blur-sm rounded-2xl border shadow-sm min-h-[3.5rem] flex items-center text-xl font-semibold"
+                    className="px-4 py-4 bg-[rgba(255,255,255,0.3)]  text-amber-950 backdrop-blur-sm rounded-2xl border shadow-sm min-h-[3.5rem] flex items-center text-xl font-semibold"
                     style={{
                       borderColor: theme.border,
                       color: theme.text,
@@ -201,7 +202,7 @@ export default function ProfilePage() {
 
               {/* Mobile Field */}
               <div className="space-y-3 md:col-span-2">
-                <label className="font-semibold text-amber-900 flex items-center gap-2">
+                <label className="font-semibold text-amber-950 flex items-center gap-2">
                   <Phone className="w-5 h-5" style={{ color: theme.primary }} />
                   Mobile Number
                 </label>
@@ -212,13 +213,13 @@ export default function ProfilePage() {
                       setForm({ ...form, mobile: e.target.value })
                     }
                     type="tel"
-                    className="w-full px-4 py-4 border rounded-2xl bg-white/50 backdrop-blur-sm  text-amber-900 outline-none transition-all duration-300 text-lg placeholder:text-[var(--brand-muted)] shadow-sm h-14"
+                    className="w-full px-4 py-4 border rounded-2xl bg-white/50 backdrop-blur-sm  text-amber-950 outline-none transition-all duration-300 text-lg placeholder:text-[var(--brand-muted)] shadow-sm h-14"
                     placeholder="Enter your mobile number"
                     style={{ borderColor: theme.border }}
                   />
                 ) : (
                   <div
-                    className="px-4 py-4 bg-[rgba(255,255,255,0.3)] text-amber-900 backdrop-blur-sm rounded-2xl border shadow-sm min-h-[3.5rem] flex items-center text-xl font-semibold"
+                    className="px-4 py-4 bg-[rgba(255,255,255,0.3)] text-amber-950 backdrop-blur-sm rounded-2xl border shadow-sm min-h-[3.5rem] flex items-center text-xl font-semibold"
                     style={{
                       borderColor: theme.border,
                       color: theme.text,
@@ -277,8 +278,8 @@ export default function ProfilePage() {
           }}
         >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-            <h2 className="text-2xl font-bold bg-clip-text text-amber-900 flex items-center gap-3">
-              <MapPin className="w-7 h-7 text-amber-900" />
+            <h2 className="text-2xl font-bold bg-clip-text text-amber-950 flex items-center gap-3">
+              <MapPin className="w-7 h-7 text-amber-950" />
               Saved Addresses
             </h2>
             <button
@@ -286,7 +287,7 @@ export default function ProfilePage() {
                 setEditingAddress(null);
                 setModalOpen(true);
               }}
-              className="group flex items-center gap-2 px-6 py-3 bg-amber-900 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="group flex items-center gap-2 px-6 py-3 bg-amber-950 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <svg
                 className="w-5 h-5 group-hover:scale-110 transition-transform"
