@@ -113,7 +113,7 @@ export default function CheckoutModal({
                       Complete Order
                     </h2>
                     <p className="text-xs" style={{ color: theme.muted }}>
-                      {cartItems.length} items • ₹{totalAmount}
+                      {cartItems.length} items • ${totalAmount}
                     </p>
                   </div>
                 </div>
@@ -187,7 +187,7 @@ export default function CheckoutModal({
                         <span className="truncate">
                           {item.productId.name} × {item.quantity}
                         </span>
-                        <span>₹{item.productId.price * item.quantity}</span>
+                        <span>${item.productId.price * item.quantity}</span>
                       </div>
                     ))}
                   </div>
@@ -195,7 +195,7 @@ export default function CheckoutModal({
                   <div className="space-y-2 text-sm bg-gray-50 p-4 rounded-lg text-gray-800">
                     <div className="flex justify-between">
                       <span>Subtotal</span>
-                      <span>₹{totalAmount}</span>
+                      <span>${totalAmount}</span>
                     </div>
                     <div className="flex justify-between text-gray-800">
                       <span>Shipping</span>
@@ -203,7 +203,7 @@ export default function CheckoutModal({
                     </div>
                     <div className="flex justify-between font-semibold">
                       <span>Total</span>
-                      <span>₹{totalAmount}</span>
+                      <span>${totalAmount}</span>
                     </div>
                   </div>
 

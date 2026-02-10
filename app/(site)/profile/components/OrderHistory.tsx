@@ -67,7 +67,7 @@ export default function OrderHistory() {
               ))}
             </div>
 
-            <div className="flex justify-between mt-3 pt-3 border-t font-semibold">
+            <div className="flex justify-between mt-3 pt-3 border-t font-semibold text-amber-950">
               <span>Total</span>
               <span>₹{order.totalAmount}</span>
             </div>

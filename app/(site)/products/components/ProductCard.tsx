@@ -37,9 +37,9 @@ export function ProductCard({ product }: any) {
     >
       <Link
         href={`/products/${product._id}`}
-        className="block relative aspect-[4/5] bg-gray-100"
+        className="block relative aspect-[3/4] bg-gray-100"
       >
-        <Image src={image} alt={product.name} fill className="object-cover" />
+        <Image src={image} alt={product.name} fill className="object-contain" />
       </Link>
 
       <div className="p-3 space-y-2">
