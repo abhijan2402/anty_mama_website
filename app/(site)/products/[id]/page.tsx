@@ -11,6 +11,7 @@ import { useGetProductByIdQuery } from "@/lib/api/productApi";
 import { getImageUrl } from "@/lib/utils";
 import { useAddToCartMutation } from "@/lib/api/cartApi";
 import { toast } from "sonner";
+import { useState } from "react";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -20,7 +21,7 @@ export default function ProductDetailPage() {
 
   const { brand } = useBrand();
   const theme = brandTheme[brand];
-
+const [expanded, setExpanded] = useState(false);
   const {
     data: product,
     isLoading,
@@ -88,17 +89,17 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Product */}
-        <div className="grid md:grid-cols-2 gap-10">
+        <div className="grid md:grid-cols-2 gap-10 items-start">
           {/* Image */}
           <div
-            className="relative aspect-[3/4] rounded-xl overflow-hidden"
+            className="relative h-64 md:h-80 rounded-xl overflow-hidden bg-white"
             style={{ border: `1px solid ${theme.border}` }}
           >
             <Image
               src={getImageUrl(product.images?.[0]) ?? "/placeholder.png"}
               alt={product.name}
               fill
-              className="object-contain"
+              className="object-contain p-4"
               priority
             />
           </div>
@@ -131,14 +132,30 @@ export default function ProductDetailPage() {
             {/* Description */}
             <div>
               <h3
-                className="text-sm font-semibold uppercase mb-1"
+                className="text-sm font-semibold uppercase mb-2"
                 style={{ color: theme.text }}
               >
                 Description
               </h3>
-              <p className="text-sm" style={{ color: theme.muted }}>
+
+              <p
+                className={`text-sm transition-all duration-300 ${
+                  expanded ? "" : "line-clamp-3"
+                }`}
+                style={{ color: theme.muted }}
+              >
                 {product.description}
               </p>
+
+              {product.description?.length > 120 && (
+                <button
+                  onClick={() => setExpanded(!expanded)}
+                  className="mt-2 text-sm font-semibold underline"
+                  style={{ color: theme.primary }}
+                >
+                  {expanded ? "Read Less" : "Read More"}
+                </button>
+              )}
             </div>
 
             {/* Specifications */}
@@ -169,7 +186,7 @@ export default function ProductDetailPage() {
             <button
               disabled={addCartLoading}
               onClick={handleAddToCart}
-              className="w-full mt-2 py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 disabled:opacity-60 bg-amber-950"
+              className="w-full mt-2 py-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 disabled:opacity-60 bg-amber-950 text-white hover:opacity-90"
             >
               {addCartLoading ? (
                 <>

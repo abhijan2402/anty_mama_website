@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import clsx from "clsx";
 import { useGetBannersQuery } from "@/lib/api/bannerApi";
 import { getImageUrl } from "@/lib/utils";
+import { useBrand } from "@/app/providers/BrandProvider";
 
 type Banner = {
   _id: string;
@@ -15,7 +16,20 @@ type Banner = {
 };
 
 export default function BrandHeroCarousel() {
-  const { data: banners = [], isLoading, isError } = useGetBannersQuery();
+  const { brand } = useBrand();
+
+  // ✅ Convert brand to API format
+  const apiBrand = useMemo(() => {
+    return brand === "ANTY_MAMA" ? "anty-mama" : "nurse-cam";
+  }, [brand]);
+
+  // ✅ Pass brand to query
+  const {
+    data: banners = [],
+    isLoading,
+    isError,
+  } = useGetBannersQuery(apiBrand);
+
   const sortedBanners: Banner[] = [...banners].sort(
     (a, b) => a.order - b.order
   );
@@ -51,17 +65,15 @@ export default function BrandHeroCarousel() {
                   className="absolute inset-0"
                 >
                   <div className="relative w-full h-full">
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={getImageUrl(banner.image)}
-                        alt="Hero Banner"
-                        fill
-                        sizes="100vw"
-                        priority={i === 0}
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
+                    <Image
+                      src={getImageUrl(banner.image)}
+                      alt="Hero Banner"
+                      fill
+                      sizes="100vw"
+                      priority={i === 0}
+                      className="object-cover"
+                      unoptimized
+                    />
                   </div>
                 </motion.div>
               )

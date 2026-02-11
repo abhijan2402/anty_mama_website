@@ -6,15 +6,20 @@ const apiBaseUrl =
 export const bannerApi = createApi({
   reducerPath: "bannerApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: apiBaseUrl, // ✅ Full external URL
+    baseUrl: apiBaseUrl,
   }),
   tagTypes: ["Banner"],
   endpoints: (builder) => ({
-    getBanners: builder.query<any[], void>({
-      query: () => "api/banners", // ✅ Just endpoint path
+    getBanners: builder.query<any[], string>({
+      query: (brand) => ({
+        url: "api/banners",
+        params: { brand }, // ✅ send as query param
+      }),
       providesTags: ["Banner"],
     }),
   }),
 });
 
 export const { useGetBannersQuery } = bannerApi;
+
+
