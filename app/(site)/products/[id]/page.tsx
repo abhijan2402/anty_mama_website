@@ -9,20 +9,36 @@ import { brandTheme } from "@/lib/brandTheme";
 import { useCart } from "@/app/providers/CartProvider";
 import { useGetProductByIdQuery } from "@/lib/api/productApi";
 import { getImageUrl } from "@/lib/utils";
+import { useAddToCartMutation } from "@/lib/api/cartApi";
+import { toast } from "sonner";
 
 export default function ProductDetailPage() {
   const params = useParams();
   const productId = params.id as string;
 
+  const [addToCart, { isLoading: addCartLoading }] = useAddToCartMutation();
+
   const { brand } = useBrand();
   const theme = brandTheme[brand];
-  const { addToCart } = useCart();
 
   const {
     data: product,
     isLoading,
     isError,
   } = useGetProductByIdQuery(productId);
+
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({ productId: productId }).unwrap();
+      toast.success("Added to cart");
+    } catch (err: any) {
+      if (err?.status === 409) {
+        toast.info("Item already in cart");
+      } else {
+        toast.error("Failed to add item");
+      }
+    }
+  };
 
   /* Loading */
   if (isLoading) {
@@ -151,23 +167,18 @@ export default function ProductDetailPage() {
 
             {/* CTA */}
             <button
-              disabled={!product.isStock}
-              onClick={() =>
-                addToCart({
-                  id: product._id,
-                  name: product.name,
-                  price: product.price,
-                  brand,
-                })
-              }
-              className="w-full md:w-auto px-10 py-3 rounded-xl text-sm font-semibold transition"
-              style={{
-                backgroundColor: theme.primary,
-                color: theme.subtext,
-                opacity: product.isStock ? 1 : 0.6,
-              }}
+              disabled={addCartLoading}
+              onClick={handleAddToCart}
+              className="w-full mt-2 py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 disabled:opacity-60 bg-amber-950"
             >
-              {product.isStock ? "Add to Cart" : "Out of Stock"}
+              {addCartLoading ? (
+                <>
+                  <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                "Add to Cart"
+              )}
             </button>
           </div>
         </div>

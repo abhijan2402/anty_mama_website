@@ -109,7 +109,7 @@ export default function ProductSection() {
                     src={getImageUrl(product.images?.[0]) ?? "/default.jfif"}
                     alt={product.name}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform"
+                    className="object-contain group-hover:scale-105 transition-transform"
                   />
                 </div>
 

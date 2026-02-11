@@ -9,26 +9,25 @@ import { useAddToCartMutation } from "@/lib/api/cartApi";
 import { toast } from "sonner";
 
 export function ProductCard({ product }: any) {
-  const [addToCart , { isLoading }] = useAddToCartMutation();
-
+  const [addToCart, { isLoading }] = useAddToCartMutation();
 
   const { brand } = useBrand();
   const theme = brandTheme[brand];
 
   const image = getImageUrl(product.images?.[0]) || "/placeholder.png";
 
-   const handleAddToCart = async () => {
-     try {
-       await addToCart({ productId: product._id }).unwrap();
-       toast.success("Added to cart");
-     } catch (err: any) {
-       if (err?.status === 409) {
-         toast.info("Item already in cart");
-       } else {
-         toast.error("Failed to add item");
-       }
-     }
-   };
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({ productId: product._id }).unwrap();
+      toast.success("Added to cart");
+    } catch (err: any) {
+      if (err?.status === 409) {
+        toast.info("Item already in cart");
+      } else {
+        toast.error("Failed to add item");
+      }
+    }
+  };
 
   return (
     <div
