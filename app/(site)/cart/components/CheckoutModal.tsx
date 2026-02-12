@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useGetProfileQuery } from "@/lib/api/authApi";
 import { useCreateOrderMutation } from "@/lib/api/cartApi";
 import { brandTheme } from "@/lib/brandTheme";
+import { useRouter } from "next/navigation";
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ export default function CheckoutModal({
   const theme = brandTheme[brand];
   const { data: profile } = useGetProfileQuery();
   const [createOrder] = useCreateOrderMutation();
+  const router = useRouter();
 
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -137,35 +139,59 @@ export default function CheckoutModal({
                     Delivery Address
                   </h3>
 
-                  <div className="space-y-2 max-h-72 overflow-y-auto">
-                    {profile?.addresses?.map((address: any) => (
-                      <div
-                        key={address._id}
-                        onClick={() => setSelectedAddressId(address._id)}
-                        className="cursor-pointer p-4 border rounded-xl transition"
+                  {/* CONDITIONAL RENDERING */}
+                  {profile?.addresses?.length === 0 ? (
+                    <div className="border-2 border-dashed rounded-xl p-6 text-center bg-gray-100">
+                      <p className="text-sm text-gray-600 mb-4">
+                        No delivery address found.
+                      </p>
+
+                      <button
+                        onClick={() => {
+                          onClose();
+                          // you can route to address page here
+                          router.push("/profile?tab=addresses");
+                        }}
+                        className="px-4 py-2 rounded-lg text-sm font-medium"
                         style={{
-                          borderColor:
-                            selectedAddressId === address._id
-                              ? theme.primary
-                              : theme.border,
-                          background:
-                            selectedAddressId === address._id
-                              ? `${theme.primary}08`
-                              : "white",
+                          background: theme.primary,
+                          color: theme.subtext,
                         }}
                       >
-                        <p className="text-sm font-medium text-gray-800">
-                          {address.fullName || address.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {address.addressLine1}, {address.city}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {address.state} {address.postalCode}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+                        + Add New Address
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2 max-h-72 overflow-y-auto">
+                      {profile?.addresses?.map((address: any) => (
+                        <div
+                          key={address._id}
+                          onClick={() => setSelectedAddressId(address._id)}
+                          className="cursor-pointer p-4 border rounded-xl transition"
+                          style={{
+                            borderColor:
+                              selectedAddressId === address._id
+                                ? theme.primary
+                                : theme.border,
+                            background:
+                              selectedAddressId === address._id
+                                ? `${theme.primary}08`
+                                : "white",
+                          }}
+                        >
+                          <p className="text-sm font-medium text-gray-800">
+                            {address.fullName || address.name}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {address.addressLine1}, {address.city}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {address.state} {address.postalCode}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Summary */}
@@ -197,10 +223,10 @@ export default function CheckoutModal({
                       <span>Subtotal</span>
                       <span>${totalAmount}</span>
                     </div>
-                    <div className="flex justify-between text-gray-800">
+                    {/* <div className="flex justify-between text-gray-800">
                       <span>Shipping</span>
                       <span className="text-green-600">FREE</span>
-                    </div>
+                    </div> */}
                     <div className="flex justify-between font-semibold">
                       <span>Total</span>
                       <span>${totalAmount}</span>

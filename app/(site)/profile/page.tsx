@@ -347,7 +347,7 @@ export default function ProfilePage() {
                 </p>
                 <button
                   onClick={() => setModalOpen(true)}
-                  className="px-8 py-3 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="px-8 py-3 font-semibold bg-amber-950 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                   style={{
                     background: `linear-linear(135deg, ${theme.primary}, ${theme.primary}E6)`,
                     color: theme.subtext,

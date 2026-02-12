@@ -7,7 +7,7 @@ import { useBrand } from "@/app/providers/BrandProvider";
 import { brandTheme } from "@/lib/brandTheme";
 
 export default function Footer() {
-  const { brand } = useBrand();
+  const { brand, setBrand } = useBrand();
   const theme = brandTheme[brand];
 
   return (
@@ -66,9 +66,12 @@ export default function Footer() {
         {/* Products */}
         <FooterColumn title="Products">
           <FooterLink href="/products">All Products</FooterLink>
-          {/* <FooterLink href="/categories">Categories</FooterLink> */}
-          {/* <FooterLink href="/best-sellers">Best Sellers</FooterLink> */}
-          {/* <FooterLink href="/new-arrivals">New Arrivals</FooterLink> */}
+          <FooterLink href="/products" onClick={() => setBrand("ANTY_MAMA")}>
+            Anty Mama Products
+          </FooterLink>
+          <FooterLink href="/products" onClick={() => setBrand("NURSE_CAM")}>
+            Nurse Cam Products
+          </FooterLink>
         </FooterColumn>
 
         {/* Legal */}
@@ -113,13 +116,19 @@ function FooterColumn({
 function FooterLink({
   href,
   children,
+  onClick,
 }: {
   href: string;
   children: React.ReactNode;
+  onClick?: () => void;
 }) {
   return (
     <li>
-      <Link href={href} className="hover:text-white transition-colors">
+      <Link
+        href={href}
+        onClick={onClick}
+        className="hover:text-white transition-colors"
+      >
         {children}
       </Link>
     </li>

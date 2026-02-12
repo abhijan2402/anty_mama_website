@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiAlertCircle } from "react-icons/fi";
 import { useBrand } from "@/app/providers/BrandProvider";
 import { brandTheme } from "@/lib/brandTheme";
@@ -12,6 +12,7 @@ import { getImageUrl } from "@/lib/utils";
 import { useAddToCartMutation } from "@/lib/api/cartApi";
 import { toast } from "sonner";
 import { useState } from "react";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -21,7 +22,7 @@ export default function ProductDetailPage() {
 
   const { brand } = useBrand();
   const theme = brandTheme[brand];
-const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const {
     data: product,
     isLoading,
@@ -44,10 +45,9 @@ const [expanded, setExpanded] = useState(false);
   /* Loading */
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-sm text-gray-500">
-          Loading product…
-        </div>
+      <div className="h-[80vh] text-amber-900 flex flex-col items-center justify-center space-y-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-900"></div>
+        <p className="text-lg font-semibold">Loading products…</p>
       </div>
     );
   }
@@ -92,7 +92,7 @@ const [expanded, setExpanded] = useState(false);
         <div className="grid md:grid-cols-2 gap-10 items-start">
           {/* Image */}
           <div
-            className="relative h-64 md:h-80 rounded-xl overflow-hidden bg-white"
+            className="relative h-64 md:h-96 rounded-xl overflow-hidden bg-white"
             style={{ border: `1px solid ${theme.border}` }}
           >
             <Image
@@ -130,30 +130,35 @@ const [expanded, setExpanded] = useState(false);
             </p>
 
             {/* Description */}
-            <div>
+            <div className="mt-6">
               <h3
-                className="text-sm font-semibold uppercase mb-2"
+                className="text-sm font-semibold uppercase mb-3 tracking-wide"
                 style={{ color: theme.text }}
               >
                 Description
               </h3>
 
-              <p
-                className={`text-sm transition-all duration-300 ${
-                  expanded ? "" : "line-clamp-3"
-                }`}
+              <motion.p
+                initial={false}
+                animate={{ height: expanded ? "auto" : "4.5rem" }}
+                className="text-sm overflow-hidden leading-relaxed"
                 style={{ color: theme.muted }}
               >
                 {product.description}
-              </p>
+              </motion.p>
 
               {product.description?.length > 120 && (
                 <button
                   onClick={() => setExpanded(!expanded)}
-                  className="mt-2 text-sm font-semibold underline"
+                  className="mt-3 flex items-center gap-1 text-sm font-medium transition-all hover:opacity-80"
                   style={{ color: theme.primary }}
                 >
                   {expanded ? "Read Less" : "Read More"}
+                  {expanded ? (
+                    <FiChevronUp className="transition-transform duration-300" />
+                  ) : (
+                    <FiChevronDown className="transition-transform duration-300" />
+                  )}
                 </button>
               )}
             </div>
@@ -186,7 +191,8 @@ const [expanded, setExpanded] = useState(false);
             <button
               disabled={addCartLoading}
               onClick={handleAddToCart}
-              className="w-full mt-2 py-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 disabled:opacity-60 bg-amber-950 text-white hover:opacity-90"
+              className="w-full mt-2 py-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 disabled:opacity-60  text-white hover:opacity-90"
+              style={{ backgroundColor: theme.primary }}
             >
               {addCartLoading ? (
                 <>
