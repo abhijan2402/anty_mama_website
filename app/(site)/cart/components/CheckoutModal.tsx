@@ -1,13 +1,12 @@
-// components/CheckoutModal.tsx
 "use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBrand } from "@/app/providers/BrandProvider";
-import { MapPin, CreditCard, Truck, CheckCircle } from "lucide-react";
+import { MapPin, CreditCard, Truck } from "lucide-react";
 import { toast } from "sonner";
 import { useGetProfileQuery } from "@/lib/api/authApi";
-import { useCreateOrderMutation } from "@/lib/api/cartApi";
+import { useCreateCheckoutSessionMutation } from "@/lib/api/paymentApi";
 import { brandTheme } from "@/lib/brandTheme";
 import { useRouter } from "next/navigation";
 
@@ -24,12 +23,11 @@ export default function CheckoutModal({
   cartItems,
   totalAmount,
   onClose,
-  onSuccess,
 }: CheckoutModalProps) {
   const { brand } = useBrand();
   const theme = brandTheme[brand];
   const { data: profile } = useGetProfileQuery();
-  const [createOrder] = useCreateOrderMutation();
+  const [createCheckoutSession] = useCreateCheckoutSessionMutation();
   const router = useRouter();
 
   const [selectedAddressId, setSelectedAddressId] = useState("");
@@ -47,7 +45,7 @@ export default function CheckoutModal({
 
     setLoading(true);
     try {
-      await createOrder({
+      const { url } = await createCheckoutSession({
         items: cartItems.map((item: any) => ({
           productId: item.productId._id,
           quantity: item.quantity,
@@ -60,18 +58,14 @@ export default function CheckoutModal({
           city: selectedAddress.city,
           state: selectedAddress.state,
           postalCode: selectedAddress.postalCode,
-          country: "India",
+          country: selectedAddress.country || "India",
           isDefault: selectedAddress.isDefault || false,
         },
-        paymentProvider: "stripe",
-        paymentIntentId: "",
       }).unwrap();
 
-      toast.success("Order placed successfully");
-      onSuccess();
+      window.location.href = url;
     } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to place order");
-    } finally {
+      toast.error(error?.data?.message || "Failed to create checkout session");
       setLoading(false);
     }
   };
@@ -98,7 +92,6 @@ export default function CheckoutModal({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6">
-              {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div
@@ -129,7 +122,6 @@ export default function CheckoutModal({
               </div>
 
               <div className="grid lg:grid-cols-2 gap-6">
-                {/* Addresses */}
                 <div>
                   <h3
                     className="text-sm font-semibold mb-4 flex items-center gap-2"
@@ -139,7 +131,6 @@ export default function CheckoutModal({
                     Delivery Address
                   </h3>
 
-                  {/* CONDITIONAL RENDERING */}
                   {profile?.addresses?.length === 0 ? (
                     <div className="border-2 border-dashed rounded-xl p-6 text-center bg-gray-100">
                       <p className="text-sm text-gray-600 mb-4">
@@ -149,7 +140,6 @@ export default function CheckoutModal({
                       <button
                         onClick={() => {
                           onClose();
-                          // you can route to address page here
                           router.push("/profile?tab=addresses");
                         }}
                         className="px-4 py-2 rounded-lg text-sm font-medium"
@@ -194,7 +184,6 @@ export default function CheckoutModal({
                   )}
                 </div>
 
-                {/* Summary */}
                 <div className="space-y-4">
                   <h3
                     className="text-sm font-semibold flex items-center gap-2"
@@ -223,10 +212,6 @@ export default function CheckoutModal({
                       <span>Subtotal</span>
                       <span>${totalAmount}</span>
                     </div>
-                    {/* <div className="flex justify-between text-gray-800">
-                      <span>Shipping</span>
-                      <span className="text-green-600">FREE</span>
-                    </div> */}
                     <div className="flex justify-between font-semibold">
                       <span>Total</span>
                       <span>${totalAmount}</span>
@@ -247,13 +232,10 @@ export default function CheckoutModal({
                     {loading ? (
                       <>
                         <span className="animate-spin h-4 w-4 border-b-2 border-white rounded-full" />
-                        Placing Order
+                        Redirecting to Stripe...
                       </>
                     ) : (
-                      <>
-                        <CheckCircle className="w-4 h-4" />
-                        Place Order
-                      </>
+                      "Proceed to Payment"
                     )}
                   </button>
 
