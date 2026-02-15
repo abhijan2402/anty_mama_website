@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useGetSessionQuery } from "@/lib/api/paymentApi";
+import { useClearCartMutation } from "@/lib/api/cartApi";
 import { CheckCircle, Package, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useBrand } from "@/app/providers/BrandProvider";
@@ -18,12 +19,23 @@ export default function PaymentSuccessPage() {
   const { data: session, isLoading, error } = useGetSessionQuery(sessionId!, {
     skip: !sessionId,
   });
+  const [clearCart] = useClearCartMutation();
+  const [cartCleared, setCartCleared] = useState(false);
 
   useEffect(() => {
     if (!sessionId) {
       router.push("/cart");
     }
   }, [sessionId, router]);
+
+  useEffect(() => {
+    if (session && !cartCleared) {
+      clearCart()
+        .unwrap()
+        .then(() => setCartCleared(true))
+        .catch(() => {}); // Silent fail - cart might already be cleared
+    }
+  }, [session, cartCleared, clearCart]);
 
   if (isLoading) {
     return (
