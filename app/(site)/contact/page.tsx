@@ -108,7 +108,7 @@ export default function ContactPage() {
                 <div>
                   <p className="font-medium text-gray-900">Address</p>
                   <p className="text-gray-600 text-sm">
-                    Industrial Area, Jaipur, Rajasthan – 302001
+                    2326 Pinebark drive Indianapolis Indiana 46217
                   </p>
                 </div>
               </div>

@@ -40,12 +40,12 @@ export default function Footer() {
           </p>
 
           <div className="flex gap-4 mt-8">
-            <SocialIcon>
+            {/* <SocialIcon>
               <Facebook size={18} />
             </SocialIcon>
             <SocialIcon>
               <Twitter size={18} />
-            </SocialIcon>
+            </SocialIcon> */}
             <SocialIcon>
               <Instagram size={18} />
             </SocialIcon>
